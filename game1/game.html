@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<title>Project2-Task2</title>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<link href="style.css" rel="stylesheet" type="text/css">
+	
+</head>
+<body>
+	<div style="width:1200px">
+	<div style="margin-left: 50px; margin-top: 20px;">
+		<button class="btn" onclick="ToStart()">Start</button><br/>
+		<button class="btn" onclick="ToReset()">Reset</button>
+		<p class="countdown">Time left: <span id="Timer"></span></p>
+	</div>
+	
+	<div style="width:180px" class="sound">				
+				<span>Sound Volume:</span>
+                <input type="range" min="0" max="100" value="10" id="soundvol">
+                <lable id="vol">10%</lable><br/>                     
+    </div>
+    
+	<div class="OrangeTree" style="width:1005px">		
+		<canvas id="myCanvas" width="1000" height="636" tabindex="0">Canvas tag not supported
+		</canvas>
+	</div>
+	</div>
+	<script type="text/javascript">
+		var time = Date.now();
+		var timer;
+		var player = new Image();
+		//player.id = "player";
+		//player.name = "forward";
+		player.src="2.png";
+
+		var m=200;
+		var fruitage;		
+		// = setInterval(createorange, 200);
+		//todo change time 
+		
+		var appGrow;// = setInterval(orangeGrow, 25);
+		//todo change time 
+		
+		var gameOverTime;
+		//=setInterval(countTimeTillGameOver ,1000);
+		var v=0.1; //volume
+
+			//Play game music
+		function playGameSound(){
+			BGM.play();
+		}
+
+		//adjust the volume of BGM
+		$("#soundvol").change(function(){			
+			$("#vol").html($(this).val()+"%")
+			var rr = parseInt($("#vol").html().trim())*0.01;		
+			BGM.volume = rr;
+		console.log(BGM.volume);
+		});
+
+	
+		//To start the game
+		function ToStart(){
+			clearInterval(timer);
+			clearInterval(fruitage);
+			clearInterval(appGrow);
+			clearInterval(gameOverTime);
+			gameTime = 420000;
+			timer = setInterval(run, 1);
+			
+			fruitage = setInterval(createOrange, 1000); //to generate oranges
+			appGrow = setInterval(Grow, 300); //to make orange grow
+			
+			gameOverTime=setInterval(GameTime ,1000);
+			BGM.addEventListener('ended', function() {
+    			this.play();
+				}, false);
+			playGameSound();
+		}
+
+		function ToReset(){
+		
+		//Reset method, add a parameter to the url, so that when we reload the page, it will start directly.
+		
+			window.location.reload();
+			
+			// window.location.search += '&reload=true';
+		}
+
+		//get canvas
+		var canvas = document.getElementById("myCanvas");
+		ctx = canvas.getContext("2d");
+
+		//add keysDown listener
+		var keysDown = {};
+		window.addEventListener('keydown', function(e) {
+			keysDown[e.keyCode] = true;
+		});
+		window.addEventListener('keyup', function(e) {
+			delete keysDown[e.keyCode];
+		});
+
+
+		var Oranges = [];
+
+		//to determine if still need to create oranges		
+		var generate = true;
+
+		//sound init about 
+		var ScoreSound = new Audio('coin.wav');
+		var hitSound = new Audio('toing.mp3');
+		ScoreSound.load();
+		hitSound.load();
+		var BGM = new Audio('bgm.mp3');		
+		var gameOverSound = new Audio('gameover.wav');
+		BGM.load();
+		gameOverSound.load();
+		var isGameOver = false;
+
+		//
+		function GameTime(){
+			gameTime -= 1000;
+			var minute  = parseInt(gameTime/60/1000, 10);
+			var second  = parseInt(gameTime/1000 - minute*60, 10);
+			document.getElementById("Timer").innerHTML = minute + " : " + second, 10;
+			if (gameTime < 1000) {
+				isGameOver = true;
+				BGM.pause();
+			}
+		}
+
+		//orange object
+		function Orange(x, y, width, color){
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.color = color;
+		}
+		//create orange 
+		function createOrange(){
+			if (generate) {
+				var orange= new Orange();
+				orange.x = parseInt(Math.random()*600) + 100;//create x position for an orange
+				orange.y = parseInt(Math.random()*50) + 30;//create y position for an orange
+				orange.width=6;
+				ctx.beginPath(); //draw to the canvas
+				ctx.arc(orange.x, orange.y, orange.width, 0, Math.PI * 2, true);
+				ctx.fillStyle="#2ca323";//at first it's green
+				ctx.fill();  
+				Oranges.push(orange);//put orange into array
+			}
+		}
+
+		//orange grow up, width should be less than 20, so that look like more beautiful
+		function Grow(){
+			for (var i = 0; i < Oranges.length; i++) {
+				var orange = Oranges[i];
+				if (orange.width < 30) {
+				//if orange is small, size grow up
+					orange.width++ ;
+
+					//change color gradient
+					var grd=ctx.createRadialGradient(orange.x, orange.y,1,orange.x,orange.y, orange.width);
+					if (orange.width >= 5 && orange.width < 12) {
+						grd.addColorStop(0,"#2ca323");
+						grd.addColorStop(1,"#6da222");
+					} else if (orange.width >= 12 && orange.width < 18) {
+						grd.addColorStop(0,"#81a122");
+						grd.addColorStop(1,"#c9ce2d");
+					} else if (orange.width >= 18 && orange.width < 25) {
+						grd.addColorStop(0,"#c9ce2d");
+						grd.addColorStop(1,"#f4ad1f");
+					} else if (orange.width >= 25 && orange.width < 30) {
+						grd.addColorStop(0,"#f4ad1f");
+						grd.addColorStop(1,"#f4ad1f");
+					}
+					orange.color = grd;
+				}
+				else{//otherwise, change to ripe
+					var grd0=ctx.createRadialGradient(orange.x, orange.y,1,orange.x,orange.y, orange.width);
+					grd0.addColorStop(0,"#f4ad1f");
+					grd0.addColorStop(1,"#f4ad1f");
+					orange.color = grd0;
+				}
+			}
+		}
+
+		var sc=0;//score
+
+		// function changeVolume(volume){
+			// 	if (volume>1) {
+			// 	ScoreSound.volume = 1;
+			// 	hitSound.volume = 1;
+			// 	BGM.volume = 1;
+			// 	gameOverSound.volume = 1;
+			// 	}
+			// else if (volume <0) {
+			// 	ScoreSound.volume = 0.1;
+			// 	hitSound.volume = 0.1;
+			// 	BGM.volume = 0.1;
+			// 	gameOverSound.volume = 0.1;
+			// }
+			// else {
+			// 	ScoreSound.volume = volume;
+			// 	hitSound.volume = volume;
+			// 	BGM.volume = volume;
+			// 	gameOverSound.volume = volume;
+			// }
+		// }
+		var left = 0;
+		//Update oranges,player and listen to the keys down
+		function update(){
+			if (Oranges.length > 20) {
+				generate = false;
+			}else{
+				generate = true;
+			}
+
+			if (37 in keysDown ) {
+					
+				if(left == 0){
+				 //player.setAttribute("class","flip");
+				 switch(count%8){
+						case 0:player.src="2r.png";
+						break;
+						case 1:player.src="cc1r.png";
+						break;
+						case 2:player.src="cc2r.png";
+						break;
+						case 3:player.src="cc3r.png";
+						break;
+						case 4:player.src="cc4r.png";
+						break;
+						case 5:player.src="cc5r.png";
+						break;
+						case 6:player.src="cc6r.png";
+						break;
+						case 7:player.src="cc7r.png";
+						break;
+					}
+				}
+				m=m-2;
+				left = 1;
+								
+				// ctx.translate(1000,0);
+				// ctx.scale(-1,1);				
+				// ctx.drawImage(player,1000-player.width-m,400);		
+				// ctx.restore;	
+			}
+
+			// if (38 in keysDown) {
+			// 	//v+=0.03;
+			// 	changeVolume(v);
+			// 	ctx.save();
+			// 	ctx.translate(1313,  733.5);
+			// 	ctx.rotate(180 * Math.PI / 180);
+			// 	ctx.drawImage(player, 85, -110.5, 226, 195);
+			//   ctx.restore();
+
+			// }
+
+			if (39 in keysDown) {
+				console.log(left);
+				if(left == 1){				
+				switch(count%8){
+						case 0:player.src="2.png";
+						break;
+						case 1:player.src="cc1.png";
+						break;
+						case 2:player.src="cc2.png";
+						break;
+						case 3:player.src="cc3.png";
+						break;
+						case 4:player.src="cc4.png";
+						break;
+						case 5:player.src="cc5.png";
+						break;
+						case 6:player.src="cc6.png";
+						break;
+						case 7:player.src="cc7.png";
+						break;
+					}
+				//player.removeAttribute("class","flip");				
+				}
+				m=m+2;	
+				left = 0;				
+			}
+
+			// if (40 in keysDown) {
+			// 	v-=0.03;
+			// 	changeVolume(v);
+			// }	
+				updateOranges();
+				ctx.drawImage(player,m,400);
+		}
+		
+		//Detect collision on player or cart
+		function collisionDetect(orange_x, orange_y,X_m,w,h,org) {
+			if(left==0){
+				if (orange_x >= X_m+70 && orange_x <= X_m+w && orange_y > h) return 1; //hitMan
+				if (orange_x >= X_m+w && orange_x <=X_m+w*2 && orange_y >= h+40) return 2;//hitCart		
+			}else{
+				if (orange_x >= X_m+71 && orange_x <= X_m+w*2 && orange_y > h) return 1; //hitMan
+				if (orange_x >= X_m+10 && orange_x <=X_m+70 && orange_y >= h+40) return 2;//hitCart
+			}	
+		}
+		var count = 0;
+		//clear canvas and draw the dropping oranges 
+		function updateOranges() {
+			ctx.clearRect(0,0, canvas.width,canvas.height);	
+			for (var i = 0; i < Oranges.length; i++) {
+				var orange = Oranges[i];
+				var collision = collisionDetect(orange.x+15 , orange.y+15, m, 120, 440,orange);
+				if (collision==1) {
+					hitSound.currentTime = 0;
+					hitSound.play();
+					sc-=1;
+				}else if (collision==2) {
+					ScoreSound.currentTime = 0;
+					ScoreSound.play();	
+					count+=1;				
+					sc+=1;
+
+					if(left == 1){
+					switch(count%8){
+						case 0:player.src="2r.png";
+						break;
+						case 1:player.src="cc1r.png";
+						break;
+						case 2:player.src="cc2r.png";
+						break;
+						case 3:player.src="cc3r.png";
+						break;
+						case 4:player.src="cc4r.png";
+						break;
+						case 5:player.src="cc5r.png";
+						break;
+						case 6:player.src="cc6r.png";
+						break;
+						case 7:player.src="cc7r.png";
+						break;
+						}				
+				
+				}
+					else{
+						switch(count%8){
+						case 0:player.src="2.png";
+						break;
+						case 1:player.src="cc1.png";
+						break;
+						case 2:player.src="cc2.png";
+						break;
+						case 3:player.src="cc3.png";
+						break;
+						case 4:player.src="cc4.png";
+						break;
+						case 5:player.src="cc5.png";
+						break;
+						case 6:player.src="cc6.png";
+						break;
+						case 7:player.src="cc7.png";
+						break;
+					}
+					}
+				}
+				//draw oranges
+				drop(orange, collision, i);
+				ctx.beginPath(); 
+				ctx.arc(orange.x, orange.y, orange.width, 0, Math.PI * 2, true);
+				ctx.fillStyle=orange.color;
+				ctx.fill();  
+			}
+			//Update Score
+			writeScore(sc);	
+		}
+
+		//drop orange when orange size is large than 30 
+		//remove the orange from the array if it hits the cart or man or on the ground
+		function drop(orange, c, index){
+			if (orange.width >= 30) {
+				//begin to move
+				if (orange.y < 656) {
+					orange.y += 0.8;
+				}
+				if (c!=undefined || orange.y >= 656) {//remove
+					Oranges.splice(index, 1);
+				}
+			}
+		}
+
+		//write score
+		function writeScore(sc) {
+			ctx.font = '28px "Arial"';
+			ctx.fillStyle = "Yellow";
+			ctx.fillText("Score: " +sc, 50, 200);
+		}
+		//game over
+		function GameOver(){
+			ctx.font = '48px "Arial"';
+			ctx.fillStyle = "Yellow";
+			ctx.fillText("Game Over", 410, 310);
+		}
+
+		function run() {
+			update((Date.now() - time) / 1000);
+			time = Date.now();
+			if (isGameOver) {
+				clearInterval(timer);
+				clearInterval(fruitage);
+				clearInterval(appGrow);
+				clearInterval(gameOverTime);
+				GameOver();
+				gameOverSound.play();
+			}
+		}
+	</script>
+</body>
+</html>

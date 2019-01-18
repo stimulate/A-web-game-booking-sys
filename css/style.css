@@ -1,0 +1,241 @@
+@font-face {
+  font-family: 'Monoton';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Monoton'), local('Monoton-Regular'), url(http://themes.googleusercontent.com/static/fonts/monoton/v4/AKI-lyzyNHXByGHeOcds_w.woff) format('woff');
+}
+
+body{
+	z-index:-1;
+	background-color:#000005; 
+}
+#c{
+	z-index:2;
+	left:0;	
+}
+
+.flip{
+  transform:scale(-1,1);
+}
+
+#containter{
+	width:100%;
+	height:300px;
+	overflow:hidden;
+	position:relative;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.2;
+	font-weight: 250;
+}
+
+form{
+	border-width:thin;
+	border-color:black;
+}
+	
+#img1 img{
+    width: 100%;
+	float:left;
+	position: absolute;
+	opacity:0;
+    animation: mymove 15s 1;
+	overflow:hidden;
+}
+
+#img2 img{
+    width: 100%;
+    height: 300px;
+	float:left;
+	position: absolute;
+	opacity:0;
+    animation: mymove2 15s 1;
+}
+
+#img3 img{
+    width: 100%;
+	height:300px;
+	float:left;
+	margin-right:0px;	
+	position: absolute;
+	opacity:1;
+    animation: mymove3 15s 1;
+	overflow:hidden;
+}
+
+#me{
+	font-size:30px;
+	color:skyblue;
+	font-weight:bold;
+	position:absolute;
+	right:0px;
+	animation: std 20s 2s 1;
+}
+	
+
+figure{
+	font-size:40px;
+	top:50%;
+	color:violet;
+	font-weight:bold;
+	position:absolute;
+	float:left;
+	margin-left:0;
+	animation: logo 10s 3;
+	padding:10px;
+}
+#milford img{
+		width:150px;
+		position:absolute;
+		left: 10px;
+		top:10px;
+		animation-name:makeLink;
+		animation-duration: 6s;
+		animation-delay: 10s;
+		animation-iteration-count: infinite;
+}
+
+
+
+.btn{
+	width: 100%;
+	padding:20px;	
+	display: inline-block;
+	text-align: center;
+	
+}
+
+.btn ul{}
+		.btn ul li{
+			display: inline-block;
+			height: 45px;
+			width:33%;			
+			background: orange;		
+			color: white;
+				padding: 10px;	
+				text-align: center;
+				font-size:34px;			
+								
+		}
+		.btn ul li:hover{
+			cursor:pointer;
+			font-size:46px;			
+			text-shadow: 0 0 10px #fff,
+               0 0 20px  #fff,
+               0 0 30px  #fff,
+               0 0 40px  #B6FF00,
+               0 0 70px  #B6FF00,
+               0 0 80px  #B6FF00,
+               0 0 100px #B6FF00,
+               0 0 150px #B6FF00;
+		}
+		#book{
+			position:relative;
+		}
+		
+		#lst {
+			position: absolute;			
+			display:none;
+			left:210px;			
+		}
+		
+		#lst a{					
+			font-size:40px;
+			color:#FF1177;
+  			font-family:Monoton;
+			display:block;
+			text-decoration:none;			
+		}
+		#lst a:hover{			
+			animation: neon1 1.5s ease-in-out infinite alternate;
+		}
+			.btn ul li a{				
+				text-decoration:none;
+				color: white;	
+			}				
+
+section.section1 {
+    width: 50%;
+    float: left;
+    margin: 20px 0;
+    padding: 10px;
+    background: #fff;
+}
+
+
+@keyframes makeLink{
+		0% {left:50px; top:20px; color:yellow;opacity:0.2;}
+		50% {left:50px; top:150px; color:red; opacity:1;}
+		100%{left: 50px; top:20px;color:skyblue;opacity:0.5;}
+	}
+	
+@keyframes std{
+	0%{ right:-200%;}
+	50%{ right:-100%;}
+	75%{ right:0;  font-size: 50px; color:darkgoldenrod;}
+	85%{right:15%; font-size:90px;}
+	100%{right:30%; font-size:30px;}
+}
+
+@keyframes logo {
+    0%   {top: -500%;}
+    15%  {top: -400%;}
+	30%  {top: -200%;}
+	35%  {top: -150%;}
+	40%  {top: -100%;}
+	45%  {top: -50%;}
+	50%  {top: 0;}
+	55%  {top: 10%; font-size:80px; color:yellow; opacity:0.3}
+	60%  {top: 30%; font-size:100px; color:purple; opacity:0.5}
+    75%  {top:40%; font-size:120px; color:blue; opacity:0.7}
+	85%  {top:50%; font-size:0px; color:pink; opacity:1}
+	90%  {top:70%; font-size:0px; color:teal; opacity:0.5}
+	95%  {top:85%; font-size:50px; color:blue; opacity:0.7}
+    100% {top:100%; font-size:80px; color:darkgreen; opacity:0.2}
+}
+
+@keyframes mymove {
+    0%   {left: 0;opacity:1;}
+    25%  {left: -100%;opacity:1;}
+    75%  {left: -200%;opacity:1;}
+    100% {left: -300%;opacity:1;}
+}
+
+@keyframes mymove2 {
+    0%   {top: -300%;opacity:1;}
+    25%  {top: -200%;opacity:1;}
+    75%  {top: -100%;opacity:1;}
+    100% {top: 0;opacity:1;}
+}
+
+@keyframes mymove3 {
+    0%   {top: -300%;opacity:1;}
+    25%  {top: 10%;opacity:1;}
+    75%  {top: 20;opacity:1;}
+    100% {top: 0;opacity:0;}
+}
+/*glow*/
+@keyframes neon1 {
+  from {
+    text-shadow: 0 0 10px #fff,
+               0 0 20px  #fff,
+               0 0 30px  #fff,
+               0 0 40px  #FF1177,
+               0 0 70px  #FF1177,
+               0 0 80px  #FF1177,
+               0 0 100px #FF1177,
+               0 0 150px #FF1177;
+  }
+  to {
+    text-shadow: 0 0 5px #fff,
+               0 0 10px #fff,
+               0 0 15px #fff,
+               0 0 20px #FF1177,
+               0 0 35px #FF1177,
+               0 0 40px #FF1177,
+               0 0 50px #FF1177,
+               0 0 75px #FF1177;
+  }
+}
